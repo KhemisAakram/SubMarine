@@ -13,7 +13,7 @@ Camera-based object detection (COCO-SSD), pressure/depth sensing, and buoyancy c
 | Raspberry Pi Zero W V1.1 | 1 | Main controller |
 | OV5647 Camera Module | 1 | Object detection via COCO-SSD |
 | 34900 DC Motor 12V | 2 | Propulsion: rear (Fwd/Rev) + side (Left/Right) |
-| BTS7960 H-bridge Motor Driver | 2 | Drive each 34900 motor (43A peak, 12V) |
+| Mini L298N Motor Driver | 2 | Drive each 34900 motor (2A per channel, 12V) |
 | MPX5010DP + ADS1115 | 1 | Pressure / depth measurement (0–10kPa ˜ 1m H2O) |
 | VL53L0X V2 (ToF) | 1 | Obstacle distance sensing (up to 2m) |
 | N20 Micro Gear Motor | 1 | Syringe ballast actuation |
@@ -26,6 +26,8 @@ Camera-based object detection (COCO-SSD), pressure/depth sensing, and buoyancy c
 | PVC end caps + O-rings | 2 | Waterproof seals |
 | Cable gland (PG9/PG11) | 2–4 | Wire passthrough |
 | 6+ core shielded cable (10m+) | 1 | Tether (power + data) |
+
+> **?? L298N Current Limit:** Mini L298N max 2A per channel. 34900 motors may draw 3–5A at stall. Bench test OK, but under load consider heatsinks or upgrading to BTS7960.
 
 ---
 
@@ -47,7 +49,7 @@ See [PowerManagement.md](PowerManagement.md) for power tree, voltage regulation,
   ¦  +--------+ +--------+ +------+ +---------+ ¦
   ¦  ¦Battery ¦ ¦ PiZero ¦ ¦Sensors¦ ¦ Camera  ¦ ¦
   ¦  ¦3×18650 ¦ ¦ +Reg   ¦ ¦+Mtr  ¦ ¦ +LED    ¦ ¦
-  ¦  ¦ 3S     ¦ ¦ +BTS   ¦ ¦Drv   ¦ ¦         ¦ ¦
+  ¦  ¦ 3S     ¦ ¦ +L298N   ¦ ¦Drv   ¦ ¦         ¦ ¦
   ¦  +--------+ +--------+ +------+ +---------+ ¦
   ¦      ^           ^         ^          ^       ¦
   ¦  Cable Gland   USB     I2C/GPIO   CSI Ribbon ¦
@@ -87,7 +89,7 @@ See [PowerManagement.md](PowerManagement.md) for power tree, voltage regulation,
 
 1. **Bench test electronics** — Pi Zero, motors, sensors outside tube
 2. **I²C sensor setup** — ADS1115 + MPX5010DP, VL53L0X
-3. **Motor control code** — PWM via BTS7960 for differential thrust
+3. **Motor control code** — PWM via Mini L298N for differential thrust
 4. **Camera + COCO-SSD** — TensorFlow Lite object detection pipeline
 5. **Syringe ballast test** — N20 + syringe mechanism
 6. **Dry-fit in PVC tube** — layout all components
@@ -108,3 +110,4 @@ See [PowerManagement.md](PowerManagement.md) for power tree, voltage regulation,
 ---
 
 *This plan is a living document — update as you finalize parts and wiring.*
+

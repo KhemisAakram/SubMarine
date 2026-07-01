@@ -30,7 +30,7 @@ Power architecture, voltage regulation, protection, and runtime calculations.
                       │              │           5V Rail             │
                       │              │                               │
                       │     ┌────────┴────────┐   ┌──────────────────┴───┐
-                      │     │  Pi Zero W 5V   │   │  BTS7960 Logic (x2)   │
+                      │     │  Pi Zero W 5V   │   │  L298N Logic (x2)   │
                       │     │  (+200mA)       │   │  (+50mA total)         │
                       │     └─────────────────┘   └──────────────────────┘
                       │     ┌─────────────────┐   ┌──────────────────────┐
@@ -39,7 +39,7 @@ Power architecture, voltage regulation, protection, and runtime calculations.
                       │     └─────────────────┘   └──────────────────────┘
                       │
                       │  ┌─────────────────────────────────────────────┐
-                      └──┤ 12V Rail → BTS7960 Power Input → 2× 34900 │
+                      └──┤ 12V Rail → L298N Power Input → 2× 34900 │
                          │ Motors (4–8A under load)                    │
                          └─────────────────────────────────────────────┘
 ```
@@ -98,7 +98,7 @@ Power architecture, voltage regulation, protection, and runtime calculations.
 | Component | Current (est.) | Notes |
 |-----------|---------------|-------|
 | Pi Zero W | ~200mA | Idle + camera |
-| BTS7960 Logic (×2) | ~50mA | GPIO PWM control |
+| L298N Logic (×2) | ~50mA | GPIO PWM control |
 | N20 Motor | ~100mA | Syringe actuation |
 | ADS1115 + MPX5010DP | ~10mA | I²C sensors |
 | **5V Total** | **~360mA** | Well within 3A limit |
@@ -174,11 +174,13 @@ For a **10m+ tether**:
 
 ## Wiring Notes
 - **Ground bus:** Star-connect all grounds at battery negative terminal
-- **Decoupling:** Add 100µF + 0.1µF ceramic cap at each BTS7960 power input
+- **Decoupling:** Add 100µF + 0.1µF ceramic cap at each L298N Power Input
 - **Pi power:** Feed 5V directly to Pi Zero 5V pin (not via microUSB — more stable)
-- **Motor snubbers:** Add flyback diodes across each 34900 motor (already on BTS7960, but verify)
+- **Motor snubbers:** Add flyback diodes across each 34900 motor (already on L298N (verify), but verify)
 - **BMS wiring:** Use balance lead connector for charging (standard 3S JST-XH)
 
 ---
 
 *This power plan is a living document — update as components change.*
+
+
