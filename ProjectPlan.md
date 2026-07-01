@@ -34,6 +34,11 @@ See [WiringPlan.md](WiringPlan.md) for full wiring architecture, I²C bus, GPIO p
 
 ---
 
+## Power
+See [PowerManagement.md](PowerManagement.md) for power tree, voltage regulation, battery/BMS specs, power budget per rail, runtime estimates, protection, and wire gauge recommendations.
+
+---
+
 ## PVC Tube Layout (Cross-section)
 
 ```
