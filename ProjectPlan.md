@@ -1,4 +1,4 @@
-# SubMarine ROV — Project Plan
+# SubMarine ROV ï¿½ Project Plan
 
 ## Overview
 PVC-tube-based underwater ROV controlled by Raspberry Pi Zero W V1.1.
@@ -14,25 +14,25 @@ Camera-based object detection (COCO-SSD), pressure/depth sensing, and buoyancy c
 | OV5647 Camera Module | 1 | Object detection via COCO-SSD |
 | 34900 DC Motor 12V | 2 | Propulsion: rear (Fwd/Rev) + side (Left/Right) |
 | Mini L298N Motor Driver | 2 | Drive each 34900 motor (2A per channel, 12V) |
-| MPX5010DP + ADS1115 | 1 | Pressure / depth measurement (0–10kPa ˜ 1m H2O) |
+| MPX5010DP + ADS1115 | 1 | Pressure / depth measurement (0ï¿½10kPa ï¿½ 1m H2O) |
 | VL53L0X V2 (ToF) | 1 | Obstacle distance sensing (up to 2m) |
 | N20 Micro Gear Motor | 1 | Syringe ballast actuation |
-| 20ml Syringe | 2 | Ballast — push/pull water for buoyancy |
+| 20ml Syringe | 2 | Ballast ï¿½ push/pull water for buoyancy |
 | 18650 3.7V 2200mAh | 3 | 3S pack = 11.1V nominal main power |
 | Voltage Regulator (12V?5V, 3A) | 1 | Safe 5V for Pi Zero |
 | Ethernet-over-USB adapter (RNDIS) | 1 | Tether data link |
 | LED strip (12V) | 1 | Underwater lighting |
-| PVC tube (Ø100mm×400mm) | 1 | Main pressure hull |
+| PVC tube (ï¿½100mmï¿½400mm) | 1 | Main pressure hull |
 | PVC end caps + O-rings | 2 | Waterproof seals |
-| Cable gland (PG9/PG11) | 2–4 | Wire passthrough |
+| Cable gland (PG9/PG11) | 2ï¿½4 | Wire passthrough |
 | 6+ core shielded cable (10m+) | 1 | Tether (power + data) |
 
-> **?? L298N Current Limit:** Mini L298N max 2A per channel. 34900 motors may draw 3–5A at stall. Bench test OK, but under load consider heatsinks or upgrading to BTS7960.
+> **?? L298N Current Limit:** Mini L298N max 2A per channel. 34900 motors may draw 3ï¿½5A at stall. Bench test OK, but under load consider heatsinks or upgrading to BTS7960.
 
 ---
 
 ## Wiring
-See [WiringPlan.md](WiringPlan.md) for full wiring architecture, I²C bus, GPIO pin mapping, and power budget.
+See [WiringPlan.md](WiringPlan.md) for full wiring architecture, Iï¿½C bus, GPIO pin mapping, and power budget.
 
 ---
 
@@ -41,23 +41,28 @@ See [PowerManagement.md](PowerManagement.md) for power tree, voltage regulation,
 
 ---
 
+## Pin Definitions
+See [src/pins.h](src/pins.h) (C header) and [src/pins.py](src/pins.py) (Python module) for the complete GPIO pin mapping.
+
+---
+
 ## PVC Tube Layout (Cross-section)
 
 ```
   +----------------------------------------------+
-  ¦  Rear Cap               PVC Tube          Front Cap ¦
-  ¦  +--------+ +--------+ +------+ +---------+ ¦
-  ¦  ¦Battery ¦ ¦ PiZero ¦ ¦Sensors¦ ¦ Camera  ¦ ¦
-  ¦  ¦3×18650 ¦ ¦ +Reg   ¦ ¦+Mtr  ¦ ¦ +LED    ¦ ¦
-  ¦  ¦ 3S     ¦ ¦ +L298N   ¦ ¦Drv   ¦ ¦         ¦ ¦
-  ¦  +--------+ +--------+ +------+ +---------+ ¦
-  ¦      ^           ^         ^          ^       ¦
-  ¦  Cable Gland   USB     I2C/GPIO   CSI Ribbon ¦
-  ¦  (Tether)     Tether    Wires      Cable     ¦
+  ï¿½  Rear Cap               PVC Tube          Front Cap ï¿½
+  ï¿½  +--------+ +--------+ +------+ +---------+ ï¿½
+  ï¿½  ï¿½Battery ï¿½ ï¿½ PiZero ï¿½ ï¿½Sensorsï¿½ ï¿½ Camera  ï¿½ ï¿½
+  ï¿½  ï¿½3ï¿½18650 ï¿½ ï¿½ +Reg   ï¿½ ï¿½+Mtr  ï¿½ ï¿½ +LED    ï¿½ ï¿½
+  ï¿½  ï¿½ 3S     ï¿½ ï¿½ +L298N   ï¿½ ï¿½Drv   ï¿½ ï¿½         ï¿½ ï¿½
+  ï¿½  +--------+ +--------+ +------+ +---------+ ï¿½
+  ï¿½      ^           ^         ^          ^       ï¿½
+  ï¿½  Cable Gland   USB     I2C/GPIO   CSI Ribbon ï¿½
+  ï¿½  (Tether)     Tether    Wires      Cable     ï¿½
   +----------------------------------------------+
 ```
 
-**Ballast:** Syringe system — N20 motor pushes/pulls 20ml syringes to adjust buoyancy.
+**Ballast:** Syringe system ï¿½ N20 motor pushes/pulls 20ml syringes to adjust buoyancy.
 **Sealing:** O-ring grooves in end caps + silicone grease.
 **Cable glands:** Epoxy-sealed on rear cap for tether.
 
@@ -66,35 +71,35 @@ See [PowerManagement.md](PowerManagement.md) for power tree, voltage regulation,
 ## Buoyancy Control (Syringe Ballast)
 
 ```
-  N20 Motor ? GPIO12(PWM) + GPIO13(DIR)
-      ¦
+  N20 Motor ? L298N #1 Ch B (GPIO5/6/19)
+      ï¿½
       +-- Rack & pinion / leadscrew
-      ¦
+      ï¿½
   +-------+     +-------+
-  ¦ Syr 1 ¦     ¦ Syr 2 ¦
-  ¦ 20ml  ¦-----¦ 20ml  ¦
+  ï¿½ Syr 1 ï¿½     ï¿½ Syr 2 ï¿½
+  ï¿½ 20ml  ï¿½-----ï¿½ 20ml  ï¿½
   +-------+     +-------+
-      ¦              ¦
+      ï¿½              ï¿½
   ------------------------ Water intake/outtake
 ```
 
 - N20 motor drives both syringes in parallel
 - Push = expel water ? lighter ? ascend
 - Pull = intake water ? heavier ? descend
-- Total displacement: 40ml of water ˜ 40g buoyancy change
+- Total displacement: 40ml of water ï¿½ 40g buoyancy change
 
 ---
 
 ## Next Steps
 
-1. **Bench test electronics** — Pi Zero, motors, sensors outside tube
-2. **I²C sensor setup** — ADS1115 + MPX5010DP, VL53L0X
-3. **Motor control code** — PWM via Mini L298N for differential thrust
-4. **Camera + COCO-SSD** — TensorFlow Lite object detection pipeline
-5. **Syringe ballast test** — N20 + syringe mechanism
-6. **Dry-fit in PVC tube** — layout all components
-7. **Water test** — bucket test for buoyancy + sealing
-8. **First dive** — pool/calm water
+1. **Bench test electronics** ï¿½ Pi Zero, motors, sensors outside tube
+2. **Iï¿½C sensor setup** ï¿½ ADS1115 + MPX5010DP, VL53L0X
+3. **Motor control code** ï¿½ PWM via Mini L298N for differential thrust
+4. **Camera + COCO-SSD** ï¿½ TensorFlow Lite object detection pipeline
+5. **Syringe ballast test** ï¿½ N20 + syringe mechanism
+6. **Dry-fit in PVC tube** ï¿½ layout all components
+7. **Water test** ï¿½ bucket test for buoyancy + sealing
+8. **First dive** ï¿½ pool/calm water
 
 ---
 
@@ -102,12 +107,14 @@ See [PowerManagement.md](PowerManagement.md) for power tree, voltage regulation,
 - **OS:** Raspberry Pi OS Lite (Bookworm)
 - **Language:** Python 3
 - **Camera:** picamera2 + TensorFlow Lite (COCO-SSD)
-- **I²C Sensors:** smbus2 / adafruit-circuitpython libraries
+- **Iï¿½C Sensors:** smbus2 / adafruit-circuitpython libraries
 - **Motor control:** RPi.GPIO + PWM
 - **Control interface:** Web UI over tether (Flask + joystick)
 - **Communication:** SSH over USB Ethernet/RNDIS
 
 ---
 
-*This plan is a living document — update as you finalize parts and wiring.*
+*This plan is a living document ï¿½ update as you finalize parts and wiring.*
+
+
 
